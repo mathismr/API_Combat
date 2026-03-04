@@ -8,7 +8,7 @@ from app.api.api import main_router
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    app.mongodb_client = AsyncIOMotorClient(settings.MONOGODB_URI)
+    app.mongodb_client = AsyncIOMotorClient(settings.MONOGODB_URI, uuidRepresentation='standard')
     app.db = app.mongodb_client[settings.DATABASE_NAME]
     print(f"Connected to MongoDB: {settings.DATABASE_NAME}")
 
