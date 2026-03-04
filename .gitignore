@@ -1,0 +1,88 @@
+# ----------------------------
+# Python bytecode / caches
+# ----------------------------
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.mypy_cache/
+.pytype/
+.pyre/
+
+# ----------------------------
+# Virtual environments
+# ----------------------------
+.venv/
+venv/
+env/
+ENV/
+
+# ----------------------------
+# Packaging / build artifacts
+# ----------------------------
+build/
+dist/
+*.egg-info/
+.eggs/
+pip-wheel-metadata/
+
+# ----------------------------
+# Unit test / coverage reports
+# ----------------------------
+.coverage
+.coverage.*
+htmlcov/
+coverage.xml
+nosetests.xml
+junit.xml
+test-results/
+.tox/
+.nox/
+test_main.http
+
+# ----------------------------
+# Logs & runtime files
+# ----------------------------
+*.log
+*.pid
+*.sqlite3
+
+# ----------------------------
+# Environment / secrets
+# (keep .env.example tracked separately)
+# ----------------------------
+.env
+.env.*
+!.env.example
+
+# ----------------------------
+# FastAPI / Uvicorn / Gunicorn
+# ----------------------------
+uvicorn.log
+gunicorn.log
+
+# ----------------------------
+# IDE / editor settings
+# ----------------------------
+.idea/
+.vscode/
+*.iml
+
+# ----------------------------
+# OS files (macOS)
+# ----------------------------
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# ----------------------------
+# Jupyter
+# ----------------------------
+.ipynb_checkpoints/
+
+# ----------------------------
+# HTTP client scratch files (optional)
+# If you want to keep test_main.http tracked, do NOT add *.http here.
+# ----------------------------
+# *.http
