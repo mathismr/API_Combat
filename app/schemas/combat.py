@@ -4,18 +4,18 @@ from pydantic import (
 )
 from typing import List
 from uuid import UUID, uuid4
-
-from app.schemas.turn import Turn
+from datetime import datetime
 
 
 class CombatBase(BaseModel):
     monsters: List[str]
-    turns: List[Turn] | None= []
+    turns: List[str] | None = []
     isFinished: bool | None = False
     winner: str | None = ''
 
 class CombatCreate(CombatBase):
     id: UUID = Field(default_factory=uuid4, alias='_id')
+    created_at: str = datetime.now().isoformat()
 
     model_config = {
         "json_schema_extra": {
