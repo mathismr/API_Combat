@@ -2,7 +2,7 @@ from pydantic import (
     BaseModel,
     Field,
 )
-from typing import List, Optional
+from typing import List
 from uuid import UUID, uuid4
 
 from app.schemas.turn import Turn
@@ -16,6 +16,7 @@ class CombatBase(BaseModel):
 
 class CombatCreate(CombatBase):
     id: UUID = Field(default_factory=uuid4, alias='_id')
+
     model_config = {
         "json_schema_extra": {
             "examples": [
