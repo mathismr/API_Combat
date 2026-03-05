@@ -10,9 +10,9 @@ from app.schemas.turn import Turn
 
 class CombatBase(BaseModel):
     monsters: List[str]
-    turns: List[Turn] = []
+    turns: List[Turn] | None= []
     isFinished: bool | None = False
-    winner: str | None = None
+    winner: str | None = ''
 
 class CombatCreate(CombatBase):
     id: UUID = Field(default_factory=uuid4, alias='_id')

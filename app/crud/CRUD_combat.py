@@ -6,7 +6,9 @@ from uuid import UUID
 async def create_combat(db: AsyncIOMotorDatabase, combat_in: CombatCreate):
     combat_data = combat_in.model_dump(by_alias=True)
 
-    if len(combat_data.get("turns")) > 0 or combat_data.get("winner") is not None:
+    if (len(combat_data.get("turns")) > 0 or
+            combat_data.get("isFinished") is True or
+            combat_data.get("winner") != ''):
         return None
 
     combat_data["winner"] = ''
