@@ -9,13 +9,16 @@ from app.api.api import main_router
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     app.mongodb_client = AsyncIOMotorClient(settings.MONOGODB_URI, uuidRepresentation='standard')
-    app.db = app.mongodb_client[settings.DATABASE_NAME]
-    print(f"Connected to MongoDB: {settings.DATABASE_NAME}")
+    app.combat_db = app.mongodb_client[settings.COMBAT_DATABASE_NAME]
+    app.turns_db = app.mongodb_client[settings.TURN_DATABASE_NAME]
+    print(f"Connected to MongoDB: {settings.COMBAT_DATABASE_NAME}")
+    print(f"Connected to MongoDB: {settings.TURN_DATABASE_NAME}")
 
     yield
 
     app.mongodb_client.close()
-    print(f"Disconnected from MongoDB: {settings.DATABASE_NAME}")
+    print(f"Disconnected from MongoDB: {settings.COMBAT_DATABASE_NAME}")
+    print(f"Disconnected from MongoDB: {settings.TURN_DATABASE_NAME}")
 
 app = FastAPI(
     title="GatchAPI - Combat API",
