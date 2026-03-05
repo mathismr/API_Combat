@@ -11,7 +11,6 @@ async def create_combat(db: AsyncIOMotorDatabase, combat_in: CombatCreate):
             combat_data.get("winner") != ''):
         return None
 
-    combat_data["winner"] = ''
     new_combat = await db.combats.insert_one(combat_data)
 
     return await db.combats.find_one({"_id": new_combat.inserted_id})
