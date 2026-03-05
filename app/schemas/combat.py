@@ -14,6 +14,8 @@ class CombatBase(BaseModel):
     isFinished: bool | None = False
     winner: str | None = ''
 
+class CombatCreate(CombatBase):
+    id: UUID = Field(default_factory=uuid4, alias='_id')
     model_config = {
         "json_schema_extra": {
             "examples": [
@@ -24,13 +26,9 @@ class CombatBase(BaseModel):
         }
     }
 
-class CombatCreate(CombatBase):
-    id: UUID = Field(default_factory=uuid4, alias='_id')
-
 class CombatUpdate(BaseModel):
-    turns: Optional[List[Turn]] = None
-    isFinished: Optional[bool] = None
-    winner: Optional[str] = None
+    combat_id: str
+    user_used_skill: str
 
 class CombatOut(CombatBase):
     id: UUID = Field(alias='_id')
