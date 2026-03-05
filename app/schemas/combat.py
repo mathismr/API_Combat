@@ -14,6 +14,16 @@ class CombatBase(BaseModel):
     isFinished: bool | None = False
     winner: str | None = ''
 
+    model_config = {
+        "json_schema_extra": {
+            "examples": [
+                {
+                    "monsters": ["example_UUID_1", "example_UUID_2"]
+                }
+            ]
+        }
+    }
+
 class CombatCreate(CombatBase):
     id: UUID = Field(default_factory=uuid4, alias='_id')
 
