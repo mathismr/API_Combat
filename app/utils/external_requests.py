@@ -17,7 +17,6 @@ def monster_api_rq(endpoint: str, uuid: str) -> Dict:
             return {"error": "Invalid endpoint"}
 
     try:
-        print(url)
         response: HTTPResponse = urlopen(url)
         response_json = json.loads(response.read().decode("utf-8"))
         return response_json
