@@ -17,7 +17,7 @@ DEF_SCALING_FACTOR = 100
 
 
 class AI:
-    def __init__(self, combat: Dict, u_skill: str):
+    def __init__(self, combat: Dict, u_skill: str, turns_data: List[Dict] = None):
         self.combat = combat
 
         self.u_skill   = fetch_api("skill", u_skill)
@@ -26,8 +26,7 @@ class AI:
         self.u_monster  = fetch_api("monster", combat.get("monsters")[0])
         self.ai_monster = fetch_api("monster", combat.get("monsters")[1])
 
-        turns = combat.get("turns", [])
-        self._last_turn_info = fetch_api("turn", turns[-1]) if turns else None
+        self._turns_data = turns_data or []
 
         self._cooldown_map: Dict[str, int] = self._build_cooldown_map()
 
@@ -43,8 +42,7 @@ class AI:
         cooldown_map: Dict[str, int] = {}
         ai_id = self.ai_monster.get("monsterId")
 
-        for turn_index, turn_id in enumerate(self.combat.get("turns", [])):
-            turn = fetch_api("turn", turn_id)
+        for turn_index, turn in enumerate(self._turns_data):
             if not turn:
                 continue
             for monster_info in turn.get("monsters", []):
