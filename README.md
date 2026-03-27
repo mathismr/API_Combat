@@ -2,7 +2,7 @@
 
 ## Description
 
-The Combat API for the Gatcha API project.
+The Combat API for the [Gatcha API project](https://github.com/Maxe2005/GatchaApi).
 
 ## Installation
 
