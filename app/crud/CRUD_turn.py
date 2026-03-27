@@ -150,10 +150,13 @@ async def create_turn(db: AsyncIOMotorDatabase, turn_in: TurnRequest):
 
     await db.turns.insert_one(turn_data)
 
-    # Mise à jour de la liste des tours dans le combat
-    await db.combats.update_one(
-        {"_id": UUID(turn_in.combat_id)},
-        {"$push": {"turns": str(turn.id)}}
-    )
+    # Mise à jour du combat : ajout du tour + fin éventuelle
+    combat_update: dict = {"$push": {"turns": str(turn.id)}}
+
+    if u_hp <= 0 or ai_hp <= 0:
+        winner = combat["monsters"][1] if u_hp <= 0 else combat["monsters"][0]
+        combat_update["$set"] = {"isFinished": True, "winner": winner}
+
+    await db.combats.update_one({"_id": UUID(turn_in.combat_id)}, combat_update)
 
     return turn_data
