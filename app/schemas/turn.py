@@ -20,7 +20,7 @@ class TurnBase(BaseModel):
 
 class TurnCreate(TurnBase):
     id: UUID = Field(default_factory=uuid4, alias='_id')
-    created_at: str = datetime.now().isoformat()
+    created_at: str = Field(default_factory=lambda: datetime.now().isoformat())
 
     model_config = {
         "json_schema_extra": {
