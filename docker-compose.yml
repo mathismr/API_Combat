@@ -16,8 +16,11 @@ services:
     ports:
       - "8000:8000"
     environment:
-      - MONGODB_URL=mongodb://mongodb:27017
-      - DATABASE_NAME=combats
+      - MONOGODB_URI=mongodb://mongodb:27017
+      - COMBAT_DATABASE_NAME=combats
+      - TURN_DATABASE_NAME=turns
+    env_file:
+      - .env
     depends_on:
       - mongodb
     volumes:
