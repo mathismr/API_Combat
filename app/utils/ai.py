@@ -20,10 +20,10 @@ class AI:
     def __init__(self, combat: Dict, u_skill: str, turns_data: List[Dict] = None):
         self.combat = combat
 
-        self.u_skill   = fetch_api("skill", u_skill)
+        self.u_skill = fetch_api("skill", u_skill)
         self.ai_skill: Optional[Dict] = None
 
-        self.u_monster  = fetch_api("monster", combat.get("monsters")[0])
+        self.u_monster = fetch_api("monster", combat.get("monsters")[0])
         self.ai_monster = fetch_api("monster", combat.get("monsters")[1])
 
         self._turns_data = turns_data or []
@@ -66,7 +66,7 @@ class AI:
                 continue
 
             last_used = self._cooldown_map.get(str(skill_id))
-            cooldown   = skill.get("cooldown", 0)
+            cooldown = skill.get("cooldown", 0)
 
             if last_used is None or (current_turn - last_used) > cooldown:
                 available.append(skill)
@@ -100,8 +100,8 @@ class AI:
           dégâts bruts  = skill.damage + attacker[ratio.stat] × ratio.percent
           dégâts finaux = dégâts bruts × affinité / (1 + def / DEF_SCALING_FACTOR)
         """
-        base   = skill.get("damage", 0.0)
-        ratio  = skill.get("ratio", {})
+        base = skill.get("damage", 0.0)
+        ratio = skill.get("ratio", {})
 
         stat_map = {
             "HP":  attacker.get("hp",  0.0),
@@ -138,7 +138,7 @@ class AI:
         score = self._estimate_damage(skill, self.ai_monster, self.u_monster)
 
         ai_hp = self.ai_monster.get("hp", 1.0)
-        u_hp  = self.u_monster.get("hp",  1.0)
+        u_hp = self.u_monster.get("hp",  1.0)
 
         if ai_hp <= HP_THRESHOLD:          # l'IA est en danger → burst
             score *= 1.5

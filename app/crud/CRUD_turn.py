@@ -4,7 +4,7 @@ from fastapi import HTTPException
 from motor.motor_asyncio import AsyncIOMotorDatabase
 
 from app.exceptions.exc_combat import CombatNotFoundException
-from app.schemas.turn import TurnCreate, TurnRequest, MonsterInfo
+from app.schemas.turn import TurnCreate, TurnRequest, MonsterInfo, SkillCooldown, MonsterCooldowns
 from app.utils.ai import AI, affinity_chart
 from app.utils.external_requests import fetch_api
 
@@ -49,6 +49,39 @@ def _calculate_damage(skill: dict, attacker: dict, defender: dict) -> float:
     affinity = _affinity_multiplier(attacker.get("element", ""), defender.get("element", ""))
     def_mitigation = 1.0 + (defender.get("def", 0.0) / DEF_SCALING_FACTOR)
     return max(0.0, (raw_damage * affinity) / def_mitigation)
+
+
+def _build_cooldown_map(monster_id: str, turns_data: list) -> dict[str, int]:
+    cooldown_map: dict[str, int] = {}
+    for turn_index, turn in enumerate(turns_data):
+        if not turn:
+            continue
+        for monster_info in turn.get("monsters", []):
+            if monster_info.get("id") == monster_id:
+                skill_id = str(monster_info.get("used_skill"))
+                cooldown_map[skill_id] = turn_index
+    return cooldown_map
+
+
+def _compute_monster_cooldowns(monster_id: str, monster_data: dict, turns_data: list, current_turn: int) -> MonsterCooldowns:
+    cooldown_map = _build_cooldown_map(monster_id, turns_data)
+    skill_cooldowns = []
+    for skill_id in monster_data.get("skills", []):
+        skill = fetch_api("skill", skill_id)
+        if not skill:
+            continue
+        cd = skill.get("cooldown", 0)
+        last_used = cooldown_map.get(str(skill_id))
+        if last_used is None:
+            remaining = 0
+        else:
+            remaining = max(0, cd - (current_turn - last_used))
+        skill_cooldowns.append(SkillCooldown(
+            skill_id=str(skill.get("skillId", skill_id)),
+            cooldown=cd,
+            remaining_cooldown=remaining,
+        ))
+    return MonsterCooldowns(monster_id=monster_id, skills=skill_cooldowns)
 
 
 async def create_turn(db: AsyncIOMotorDatabase, turn_in: TurnRequest):
@@ -158,5 +191,18 @@ async def create_turn(db: AsyncIOMotorDatabase, turn_in: TurnRequest):
         combat_update["$set"] = {"isFinished": True, "winner": winner}
 
     await db.combats.update_one({"_id": UUID(turn_in.combat_id)}, combat_update)
+
+    # Calcul du cooldown pour les deux monstres
+    turns_data_with_current = turns_data + [turn_data]
+    current_turn_index = len(turns_data_with_current)
+    cooldowns = [
+        _compute_monster_cooldowns(
+            combat["monsters"][0], u_monster, turns_data_with_current, current_turn_index
+        ),
+        _compute_monster_cooldowns(
+            combat["monsters"][1], ai_monster, turns_data_with_current, current_turn_index
+        ),
+    ]
+    turn_data["cooldowns"] = [cd.model_dump() for cd in cooldowns]
 
     return turn_data
