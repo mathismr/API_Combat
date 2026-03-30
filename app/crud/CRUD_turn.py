@@ -178,7 +178,8 @@ async def create_turn(db: AsyncIOMotorDatabase, turn_in: TurnRequest):
     ]
 
     # Création et persistance du tour
-    turn = TurnCreate(combat_id=turn_in.combat_id, monsters=monsters)
+    is_last_turn = u_hp <= 0 or ai_hp <= 0
+    turn = TurnCreate(combat_id=turn_in.combat_id, monsters=monsters, isLastTurn=is_last_turn)
     turn_data = turn.model_dump(by_alias=True)
 
     await db.turns.insert_one(turn_data)

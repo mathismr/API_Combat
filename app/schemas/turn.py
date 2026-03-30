@@ -26,6 +26,7 @@ class MonsterCooldowns(BaseModel):
 class TurnBase(BaseModel):
     combat_id: str
     monsters: List[MonsterInfo]
+    isLastTurn: bool = False
 
 class TurnCreate(TurnBase):
     id: UUID = Field(default_factory=uuid4, alias='_id')
@@ -75,6 +76,7 @@ class TurnOut(TurnBase):
                             "priority": 1
                         }
                     ],
+                    "isLastTurn": False,
                     "cooldowns": [
                         {
                             "monster_id": "m1-uuid",
