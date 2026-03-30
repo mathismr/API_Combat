@@ -8,8 +8,8 @@ affinity_chart = {
     "water":    {"strengths": ["fire"],               "weaknesses": ["wind", "earth"]},
     "wind":     {"strengths": ["water", "light"],     "weaknesses": ["fire", "darkness"]},
     "earth":    {"strengths": ["water", "darkness"],  "weaknesses": ["fire", "light"]},
-    "light":    {"strengths": ["darkness", "earth"],  "weaknesses": ["wind"]},
-    "darkness": {"strengths": ["light", "wind"],      "weaknesses": ["earth"]},
+    "light":    {"strengths": ["darkness", "earth"],  "weaknesses": ["wind", "darkness"]},
+    "darkness": {"strengths": ["light", "wind"],      "weaknesses": ["earth", "light"]},
 }
 
 HP_THRESHOLD = 0.3
