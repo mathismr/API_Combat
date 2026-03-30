@@ -1,0 +1,30 @@
+services:
+  # Database
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb_container
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    restart: always
+
+  # FastAPI
+  api:
+    build: .
+    container_name: fastapi_app
+    ports:
+      - "8000:8000"
+    environment:
+      - MONOGODB_URI=mongodb://mongodb:27017
+      - COMBAT_DATABASE_NAME=combats
+      - TURN_DATABASE_NAME=turns
+    env_file:
+      - .env
+    depends_on:
+      - mongodb
+    volumes:
+      - ./app:/code/app # hot-reload for dev environment
+
+volumes:
+  mongo_data:

@@ -1,10 +1,30 @@
 from fastapi import FastAPI
+from contextlib import asynccontextmanager
+from motor.motor_asyncio import AsyncIOMotorClient
+
+from app.core.config import settings
 from app.api.api import main_router
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    app.mongodb_client = AsyncIOMotorClient(settings.MONOGODB_URI, uuidRepresentation='standard')
+    app.combat_db = app.mongodb_client[settings.COMBAT_DATABASE_NAME]
+    app.turns_db = app.mongodb_client[settings.TURN_DATABASE_NAME]
+    print(f"Connected to MongoDB: {settings.COMBAT_DATABASE_NAME}")
+    print(f"Connected to MongoDB: {settings.TURN_DATABASE_NAME}")
+
+    yield
+
+    app.mongodb_client.close()
+    print(f"Disconnected from MongoDB: {settings.COMBAT_DATABASE_NAME}")
+    print(f"Disconnected from MongoDB: {settings.TURN_DATABASE_NAME}")
 
 app = FastAPI(
     title="GatchAPI - Combat API",
     description="API for Gatcha's Combat System",
-    version="0.1.0"
+    version="0.1.0",
+    lifespan=lifespan
 )
 
 app.include_router(main_router)
